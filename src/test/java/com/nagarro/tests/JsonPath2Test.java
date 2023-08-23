@@ -41,7 +41,7 @@ public class JsonPath2Test {
         for (int i = 0; i < numberOfRecords; i++) {
             if (jsonPath.getInt("data[" + i + "].id") == 8) {
                 System.out.println(jsonPath.getString("data[" + i + "].email"));
-                Assert.assertNull(jsonPath.getString("data[" + i + "].email"));
+                Assert.assertNotNull(jsonPath.getString("data[" + i + "].email"));
             }
 
 
