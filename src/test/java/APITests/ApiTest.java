@@ -6,8 +6,6 @@ import com.nagarro.config.ExtentManager;
 import com.nagarro.payload.BookingDates;
 import com.nagarro.payload.BookingRequestPayload;
 import com.nagarro.payload.BookingResponsePayload;
-
-
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;

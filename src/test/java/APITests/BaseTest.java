@@ -26,9 +26,6 @@ public class BaseTest {
     public static final Logger logger = LogManager.getLogger(BaseTest.class);
 
 
-
-
-
     @BeforeAll
     void testHealthCheckReturns201() {
 
@@ -36,7 +33,6 @@ public class BaseTest {
         Response response = PingApi.healthCheck();
         assertThat(response.statusCode(), equalTo(SC_CREATED));
         logger.info("Test case execution has started");
-
 
     }
 
