@@ -1,4 +1,4 @@
-package com.nagarro.payload;
+package app.payloads;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

@@ -1,16 +1,17 @@
-package com.nagarro.payload;
+package app.payloads;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.extern.jackson.Jacksonized;
-
 
 @Jacksonized
 @Builder
+@EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AuthRequestPayload {
-    @JsonProperty private String username;
+public class BookingDates {
+    @JsonProperty private String checkin;
 
-    @JsonProperty private String password;
+    @JsonProperty private String checkout;
 }

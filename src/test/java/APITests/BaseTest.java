@@ -1,10 +1,10 @@
 package APITests;
 
-import com.nagarro.api.AuthApi;
-import com.nagarro.api.PingApi;
-import com.nagarro.config.ExtentManager;
-import com.nagarro.payload.AuthRequestPayload;
-import com.nagarro.payload.AuthResponsePayload;
+import app.hooks.AuthApi;
+import app.hooks.PingApi;
+import app.configs.ExtentManager;
+import app.payloads.AuthRequestPayload;
+import app.payloads.AuthResponsePayload;
 import io.restassured.response.Response;
 import net.datafaker.Faker;
 import org.apache.logging.log4j.LogManager;
@@ -13,6 +13,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
@@ -36,16 +40,37 @@ public class BaseTest {
 
     }
 
+
+    public static String readProperty(String key) {
+
+        Properties properties = new Properties();
+
+        String filePath = System.getProperty("user.dir") + "\\src\\main\\resources\\config.properties";
+
+        try (FileInputStream fis = new FileInputStream(filePath)) {
+
+            properties.load(fis);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+
+        return properties.getProperty(key);
+
+    }
+
     @BeforeEach
     void testCreateTokenReturns200() {
         //ExtentTest test = ExtentManager.createTest(this.getClass().getSimpleName());
 
         AuthRequestPayload authRequestPayload =
-                AuthRequestPayload.builder().username("admin").password("password123").build();
+                AuthRequestPayload.builder().username(readProperty("username")).password(readProperty("password")).build();
 
         Response response = AuthApi.createToken(authRequestPayload);
         token = response.as(AuthResponsePayload.class).getToken();
         assertThat(response.statusCode(), equalTo(SC_OK));
+
 
     }
 

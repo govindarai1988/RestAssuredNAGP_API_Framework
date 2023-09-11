@@ -1,12 +1,12 @@
-package com.nagarro.api;
+package app.hooks;
 
 
-import com.nagarro.payload.BookingRequestPayload;
+import app.payloads.BookingRequestPayload;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-import static com.nagarro.urls.ApiEndpoints.BASE_URL;
-import static com.nagarro.urls.ApiEndpoints.BOOKING_ENDPOINT;
+import static app.urls.ApiEndpoints.BASE_URL;
+import static app.urls.ApiEndpoints.BOOKING_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 

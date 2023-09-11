@@ -1,4 +1,4 @@
-package com.nagarro.config;
+package app.configs;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;

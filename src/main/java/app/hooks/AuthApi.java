@@ -1,10 +1,10 @@
-package com.nagarro.api;
-import com.nagarro.payload.AuthRequestPayload;
+package app.hooks;
+import app.payloads.AuthRequestPayload;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
-import static com.nagarro.urls.ApiEndpoints.AUTH_ENDPOINT;
-import static com.nagarro.urls.ApiEndpoints.BASE_URL;
+import static app.urls.ApiEndpoints.AUTH_ENDPOINT;
+import static app.urls.ApiEndpoints.BASE_URL;
 import static io.restassured.RestAssured.given;
 
 public final class AuthApi {

@@ -1,9 +1,9 @@
-package com.nagarro.api;
+package app.hooks;
 
 import io.restassured.response.Response;
 
-import static com.nagarro.urls.ApiEndpoints.BASE_URL;
-import static com.nagarro.urls.ApiEndpoints.PING_ENDPOINT;
+import static app.urls.ApiEndpoints.BASE_URL;
+import static app.urls.ApiEndpoints.PING_ENDPOINT;
 import static io.restassured.RestAssured.given;
 
 public final class PingApi {
