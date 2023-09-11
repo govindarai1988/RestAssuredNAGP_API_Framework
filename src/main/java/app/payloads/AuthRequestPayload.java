@@ -5,12 +5,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.extern.jackson.Jacksonized;
 
-
+/**
+ * Represents the payload for authentication request.
+ */
 @Jacksonized
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AuthRequestPayload {
-    @JsonProperty private String username;
 
-    @JsonProperty private String password;
+    /**
+     * The username for authentication.
+     */
+    @JsonProperty
+    private String username;
+
+    /**
+     * The password for authentication.
+     */
+    @JsonProperty
+    private String password;
 }

@@ -1,3 +1,7 @@
+/**
+ * This is the base class for API test cases in the APITests package.
+ * It provides common setup and teardown logic for all test cases.
+ */
 package APITests;
 
 import app.hooks.AuthApi;
@@ -29,54 +33,59 @@ public class BaseTest {
     protected String token;
     public static final Logger logger = LogManager.getLogger(BaseTest.class);
 
-
+    /**
+     * Executed once before all test cases in the class.
+     * Checks if the API health check returns a 201 status code.
+     */
     @BeforeAll
     void testHealthCheckReturns201() {
-
         ExtentManager.getInstance();
         Response response = PingApi.healthCheck();
         assertThat(response.statusCode(), equalTo(SC_CREATED));
         logger.info("Test case execution has started");
-
     }
 
-
+    /**
+     * Reads a property from the configuration file.
+     *
+     * @param key The key to look up in the configuration file.
+     * @return The value associated with the given key.
+     */
     public static String readProperty(String key) {
-
         Properties properties = new Properties();
-
         String filePath = System.getProperty("user.dir") + "\\src\\main\\resources\\config.properties";
-
         try (FileInputStream fis = new FileInputStream(filePath)) {
-
             properties.load(fis);
-
         } catch (IOException e) {
-
             e.printStackTrace();
         }
-
         return properties.getProperty(key);
-
     }
 
+    /**
+     * Executed before each test case.
+     * Retrieves an authentication token and stores it for use in the test cases.
+     * Verifies that creating the token returns a 200 status code.
+     */
     @BeforeEach
     void testCreateTokenReturns200() {
-        //ExtentTest test = ExtentManager.createTest(this.getClass().getSimpleName());
-
         AuthRequestPayload authRequestPayload =
-                AuthRequestPayload.builder().username(readProperty("username")).password(readProperty("password")).build();
-
+                AuthRequestPayload.builder()
+                        .username(readProperty("username"))
+                        .password(readProperty("password"))
+                        .build();
         Response response = AuthApi.createToken(authRequestPayload);
         token = response.as(AuthResponsePayload.class).getToken();
         assertThat(response.statusCode(), equalTo(SC_OK));
-
-
     }
 
+    /**
+     * Executed after all test cases in the class.
+     * Flushes the Extent report and logs completion of all test executions.
+     */
     @AfterAll
-    void afterall(){
+    void afterAll() {
         ExtentManager.flushReport();
-        logger.info("all test executed");
+        logger.info("All test cases have been executed.");
     }
 }

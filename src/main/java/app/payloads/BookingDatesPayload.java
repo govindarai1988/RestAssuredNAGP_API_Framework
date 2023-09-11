@@ -6,12 +6,24 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.extern.jackson.Jacksonized;
 
+/**
+ * Represents the payload for booking dates.
+ */
 @Jacksonized
 @Builder
 @EqualsAndHashCode
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BookingDates {
-    @JsonProperty private String checkin;
+public class BookingDatesPayload {
 
-    @JsonProperty private String checkout;
+    /**
+     * The check-in date for the booking.
+     */
+    @JsonProperty
+    private String checkin;
+
+    /**
+     * The check-out date for the booking.
+     */
+    @JsonProperty
+    private String checkout;
 }

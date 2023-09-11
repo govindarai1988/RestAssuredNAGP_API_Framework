@@ -1,6 +1,3 @@
-/**
- * This class contains test methods for retrieving booking-related data using the Booking API.
- */
 package APITests;
 
 import com.aventstack.extentreports.ExtentTest;
@@ -16,12 +13,14 @@ import org.junit.jupiter.api.Test;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.*;
 
-class GetBookingTests extends BaseTest {
+/**
+ * This class contains test methods for negative scenarios related to the Booking API.
+ */
+class NegativeTests extends BaseTest {
 
     /**
      * Generates a BookingRequestPayload with random data.
@@ -36,34 +35,13 @@ class GetBookingTests extends BaseTest {
                 .lastName(faker.name().lastName())
                 .totalPrice(faker.number().numberBetween(100, 500))
                 .depositPaid(true)
-                .bookingDates(
-                        BookingDatesPayload.builder().checkin(currentDate).checkout(currentDate).build())
+                .bookingDates(BookingDatesPayload.builder().checkin(currentDate).checkout(currentDate).build())
                 .additionalNeeds("None")
                 .build();
     }
 
     /**
-     * Tests whether retrieving all booking IDs returns a 200 status code.
-     */
-    @Test
-    void testGetAllBookingIdsReturns200() {
-        ExtentTest test = ExtentManager.createTest("testGetAllBookingIdsReturns200");
-        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
-        test.log(Status.INFO, "Executing method: " + methodName);
-        try {
-            Response response = BookingApi.getAllBookingIds();
-            assertThat(response.statusCode(), equalTo(SC_OK));
-            test.log(Status.PASS, "Test Step Passed");
-        } catch (AssertionError e) {
-            // Assertion failed, mark the test as failed
-            test.log(Status.FAIL, "Test step failed: " + e.getMessage());
-            throw e; // Re-throw the assertion error to mark the overall test as failed
-        }
-        logger.info(methodName + " has been executed");
-    }
-
-    /**
-     * Tests whether retrieving all booking IDs results in a non-empty array.
+     * Tests whether the API returns a non-empty array of booking IDs.
      */
     @Test
     void testGetAllBookingIdsReturnsNonEmptyArray() {
@@ -84,16 +62,20 @@ class GetBookingTests extends BaseTest {
     }
 
     /**
-     * Tests whether retrieving booking IDs by name returns a 200 status code.
+     * Tests whether deleting a booking with an invalid token returns a 403 status code.
      */
     @Test
-    void testGetBookingIdsByNameReturns200() {
-        ExtentTest test = ExtentManager.createTest("testGetBookingIdsByNameReturns200");
+    void testDeleteBookingReturns403() {
+        ExtentTest test = ExtentManager.createTest("testDeleteBookingReturns403");
         String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
         test.log(Status.INFO, "Executing method: " + methodName);
         try {
-            Response response = BookingApi.getBookingIdsByName("sally", "brown");
-            assertThat(response.statusCode(), equalTo(SC_OK));
+            int id = BookingApi.createBooking(createBookingRequestPayload())
+                    .as(BookingResponsePayload.class)
+                    .getBookingId();
+
+            Response response = BookingApi.deleteBooking(id, "xyz");
+            assertThat(response.statusCode(), equalTo(SC_FORBIDDEN));
             test.log(Status.PASS, "Test Step Passed");
         } catch (AssertionError e) {
             // Assertion failed, mark the test as failed
@@ -104,16 +86,20 @@ class GetBookingTests extends BaseTest {
     }
 
     /**
-     * Tests whether retrieving booking IDs by date returns a 200 status code.
+     * Tests whether deleting a booking with an invalid booking ID returns a 403 status code.
      */
     @Test
-    void testGetBookingIdsByDateReturns200() {
-        ExtentTest test = ExtentManager.createTest("testGetBookingIdsByDateReturns200");
+    void testDeleteBookingReturns401() {
+        ExtentTest test = ExtentManager.createTest("testDeleteBookingReturns401");
         String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
         test.log(Status.INFO, "Executing method: " + methodName);
         try {
-            Response response = BookingApi.getBookingIdsByDate("2014-03-13", "2014-05-21");
-            assertThat(response.statusCode(), equalTo(SC_OK));
+            int id = BookingApi.createBooking(createBookingRequestPayload())
+                    .as(BookingResponsePayload.class)
+                    .getBookingId();
+
+            Response response = BookingApi.deleteBooking(id, "21321");
+            assertThat(response.statusCode(), equalTo(SC_FORBIDDEN));
             test.log(Status.PASS, "Test Step Passed");
         } catch (AssertionError e) {
             // Assertion failed, mark the test as failed
@@ -124,21 +110,18 @@ class GetBookingTests extends BaseTest {
     }
 
     /**
-     * Tests whether retrieving a booking by ID returns a 200 status code.
+     * Tests whether updating a booking with an invalid booking ID returns a 405 status code.
      */
     @Test
-    void testGetBookingByIdReturns200() {
-        ExtentTest test = ExtentManager.createTest("testGetBookingByIdReturns200");
+    void testUpdateBookingReturns405() {
+        ExtentTest test = ExtentManager.createTest("testUpdateBookingReturns405");
         String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
         test.log(Status.INFO, "Executing method: " + methodName);
         try {
             BookingRequestPayload bookingRequestPayload = createBookingRequestPayload();
-            int id =
-                    BookingApi.createBooking(bookingRequestPayload)
-                            .as(BookingResponsePayload.class)
-                            .getBookingId();
-            Response response = BookingApi.getBookingById(id);
-            assertThat(response.statusCode(), equalTo(SC_OK));
+            bookingRequestPayload.setTotalPrice(faker.number().numberBetween(100, 500));
+            Response response = BookingApi.updateBooking(bookingRequestPayload, 231123, token);
+            assertThat(response.statusCode(), equalTo(405));
             test.log(Status.PASS, "Test Step Passed");
         } catch (AssertionError e) {
             // Assertion failed, mark the test as failed
@@ -146,5 +129,18 @@ class GetBookingTests extends BaseTest {
             throw e; // Re-throw the assertion error to mark the overall test as failed
         }
         logger.info(methodName + " has been executed");
+    }
+
+    /**
+     * Tests whether the token used for authentication is non-empty.
+     */
+    @Test
+    void testCreateTokenReturnsNonEmptyToken() {
+
+        ExtentTest test = ExtentManager.createTest("testCreateTokenReturnsNonEmptyToken");
+        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+        test.log(Status.INFO, "Executing method: " + methodName);
+        assertThat(token, is(not("")));
+        test.log(Status.PASS, "Test Step Passed");
     }
 }
